@@ -85,7 +85,7 @@ export default function LandingPage() {
             Youth Retreat 2026 • St Paul's Lutheran Church
           </div>
           <h1 className='text-5xl sm:text-7xl md:text-9xl font-black leading-[0.9] bg-gradient-to-b from-white via-yellow-100 to-yellow-500 bg-clip-text text-transparent'>
-            Slaves for <br /> Righteousness
+            Slaves to <br /> Righteousness
           </h1>
           <p className='mt-6 text-lg md:text-2xl tracking-[0.4em] text-white/75'>Romans 6:18</p>
         </motion.div>
@@ -198,9 +198,6 @@ export default function LandingPage() {
               'Instruments provided: Keyboard, Drums/Pads, Guitar',
               'Auto-Tune is not supported',
               'Please carry your Bible',
-              'Please arrive at the venue on time',
-              'Meals and refreshments will be provided',
-              'Maintain modest dress code',
             ].map((note) => (
               <div key={note} className='rounded-2xl border border-white/10 bg-white/5 p-5'>
                 ✓ {note}
