@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { Lock, X } from 'lucide-react';
 
 const bgPrimary = '/images/hero.png';
 const bgSecondary = '/images/worship.png';
@@ -41,18 +40,67 @@ const LightBeam = ({ className }) => {
 };
 
 export default function LandingPage() {
-  const [showAdminModal, setShowAdminModal] = useState(false);
   const [registrationStep, setRegistrationStep] = useState(1);
-  const [dailyLimitReached] = useState(false);
-  const [formData, setFormData] = useState({
-    fullName: '',
-    phone: '',
-    churchName: '',
-    place: '',
-    paymentMode: '',
-    utr: '',
-  });
+const [formData, setFormData] = useState({
+  fullName: '',
+  phone: '',
+  churchName: '',
+  place: '',
+  paymentMode: '',
+  utr: '',
+});
 
+const submitRegistration = async () => {
+if (
+  !formData.fullName ||
+  !formData.phone ||
+  !formData.churchName ||
+  !formData.place
+) {
+  alert("Please fill all fields");
+  return;
+}
+
+if (!/^\d{10}$/.test(formData.phone)) {
+  alert("Please enter valid phone number");
+  return;
+}
+
+if (
+  formData.paymentMode === "online" &&
+  !formData.utr
+) {
+  alert("Please enter UTR number");
+  return;
+}
+  try {
+
+await fetch(
+  "https://script.google.com/macros/s/AKfycbxy20P6d5acq-_SwrF4ISkL-hEmn4rfMznboc498AcSSPe8vsYTnz1eGC-_FpvEBtwy/exec",
+  {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      fullName: formData.fullName,
+      phone: formData.phone,
+      churchName: formData.churchName,
+      place: formData.place,
+      paymentMode: formData.paymentMode,
+      utr: formData.utr
+    }),
+  }
+);
+
+    alert("Registration Successful!");
+
+  } catch (error) {
+    console.error(error);
+    alert("Submission failed");
+  }
+};
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 1200], [0, 350]);
   const textY = useTransform(scrollY, [0, 800], [0, 120]);
@@ -74,12 +122,6 @@ export default function LandingPage() {
         <LightBeam className='top-0 right-[20%] w-40 h-[80vh] -rotate-12' />
         <Particles />
 
-        <div className='absolute top-6 right-6 z-30'>
-          <button onClick={() => setShowAdminModal(true)} className='border border-white/20 bg-white/10 backdrop-blur-2xl rounded-full px-6 py-3'>
-            <Lock className='mr-2 h-4 w-4' /> Admin Login
-          </button>
-        </div>
-
         <motion.div style={{ y: textY }} className='relative z-20 text-center px-6 max-w-7xl'>
           <div className='mb-8 inline-block px-8 py-3 rounded-full border border-yellow-200/20 bg-white/10 backdrop-blur-2xl text-sm md:text-base tracking-[0.25em] uppercase text-yellow-100/85'>
             Youth Retreat 2026 • St Paul's Lutheran Church
@@ -89,22 +131,6 @@ export default function LandingPage() {
           </h1>
           <p className='mt-6 text-lg md:text-2xl tracking-[0.4em] text-white/75'>Romans 6:18</p>
         </motion.div>
-
-        {showAdminModal && (
-          <div className='fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-md px-4'>
-            <div className='w-full max-w-md rounded-3xl border border-white/20 bg-black/60 backdrop-blur-3xl p-8'>
-              <div className='flex items-center justify-between mb-6'>
-                <h2 className='text-2xl font-bold text-yellow-100'>Admin Login</h2>
-                <button onClick={() => setShowAdminModal(false)}><X /></button>
-              </div>
-              <div className='space-y-4'>
-                <input type='text' placeholder='Admin Username' className='w-full rounded-2xl bg-white/10 border border-white/20 px-4 py-4 text-white' />
-                <input type='password' placeholder='Password' className='w-full rounded-2xl bg-white/10 border border-white/20 px-4 py-4 text-white' />
-                <button className='w-full py-6 rounded-2xl bg-gradient-to-r from-yellow-300 to-yellow-500 text-black font-bold'>Login to Dashboard</button>
-              </div>
-            </div>
-          </div>
-        )}
       </section>
 
       <section className='relative py-24 px-6 bg-gradient-to-b from-black via-[#0b0600] to-black'>
@@ -130,7 +156,26 @@ export default function LandingPage() {
               <input type='tel' placeholder='Phone Number' value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <input type='text' placeholder='Church Name' value={formData.churchName} onChange={(e) => setFormData({ ...formData, churchName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <input type='text' placeholder='Place' value={formData.place} onChange={(e) => setFormData({ ...formData, place: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-              <button onClick={() => setRegistrationStep(2)} className='py-7 rounded-2xl bg-gradient-to-r from-yellow-300 to-yellow-500 text-black'>Continue</button>
+              <button
+                onClick={() => {
+                    if (
+                      !formData.fullName ||
+                      !formData.phone ||
+                      !formData.churchName ||
+                      !formData.place
+                    ) {
+                      alert("Please fill all fields");
+                      return;
+                    }
+
+                    if (!/^\d{10}$/.test(formData.phone)) {
+                      alert("Please enter valid phone number");
+                      return;
+                    }
+
+                    setRegistrationStep(2);
+                  }}
+                 className='py-7 rounded-2xl bg-gradient-to-r from-yellow-300 to-yellow-500 text-black'>Continue</button>
             </div>
           )}
 
@@ -146,12 +191,31 @@ export default function LandingPage() {
               </div>
               <div className='flex gap-4'>
                 <button onClick={() => setRegistrationStep(1)} className='flex-1'>Edit</button>
-                <button onClick={() => setRegistrationStep(3)} className='flex-1 bg-yellow-400 text-black'>Choose Payment Method</button>
+                <button
+                 onClick={() => {
+                      if (
+                        !formData.fullName ||
+                        !formData.phone ||
+                        !formData.churchName ||
+                        !formData.place
+                      ) {
+                        alert("Please fill all fields");
+                        return;
+                      }
+
+                      if (!/^\d{10}$/.test(formData.phone)) {
+                        alert("Please enter valid phone number");
+                        return;
+                      }
+
+                      setRegistrationStep(3);
+                    }}
+                className='flex-1 bg-yellow-400 text-black'>Choose Payment Method</button>
               </div>
             </div>
           )}
 
-          {registrationStep === 3 && !dailyLimitReached && (
+          {registrationStep === 3 && (
             <div className='mt-10 space-y-6'>
               <div className='grid md:grid-cols-2 gap-6'>
                 <button onClick={() => setFormData({ ...formData, paymentMode: 'online' })} className='rounded-3xl border border-yellow-300/20 bg-white/10 p-8'>Online Payment</button>
@@ -170,7 +234,7 @@ export default function LandingPage() {
                   </div>
                   <div className='space-y-6'>
                     <input type='text' placeholder='Transaction ID / UTR Number' value={formData.utr} onChange={(e) => setFormData({ ...formData, utr: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-                    <button className='w-full bg-yellow-400 text-black'>Submit Registration</button>
+                    <button className='w-full bg-yellow-400 text-black' onClick={submitRegistration}>Submit Registration</button>
                   </div>
                 </div>
               )}
@@ -179,7 +243,12 @@ export default function LandingPage() {
                 <div className='rounded-3xl border border-green-300/20 bg-green-300/10 p-10 text-center'>
                   <h3 className='text-3xl font-bold text-green-200'>Cash Payment Selected</h3>
                   <p className='mt-6'>Pay ₹30 per head at the venue during check-in.</p>
-                  <button className='mt-8 bg-green-400 text-black'>Confirm Cash Registration</button>
+                  <button
+                    className='mt-8 bg-green-400 text-black px-8 py-4 rounded-2xl'
+                    onClick={submitRegistration}
+                  >
+                    Confirm Cash Registration
+                  </button>
                 </div>
               )}
             </div>
