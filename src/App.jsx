@@ -3,7 +3,7 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { Lock, X } from 'lucide-react';
 
 const bgPrimary = '/images/hero.png';
-const bgSecondary = '/images/worship.jpg';
+const bgSecondary = '/images/worship.png';
 const speakerImage = '/images/speaker.png';
 const paymentQr = '/images/payment-qr.jpeg';
 
