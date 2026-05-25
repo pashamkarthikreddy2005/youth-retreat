@@ -264,8 +264,8 @@ await fetch(
               'Registration is mandatory for all participants',
               'For singing participation, each team must have a minimum of 5 members',
               'For quiz participation, only 3 members are allowed from each church',
-              'Instruments provided: Keyboard, Drums/Pads, Guitar',
-              'Auto-Tune is not supported',
+              'Instruments allowed: Keyboard, Drums/Pads, Guitar',
+              'Auto-Rhythm is not supported',
               'Please carry your Bible',
             ].map((note) => (
               <div key={note} className='rounded-2xl border border-white/10 bg-white/5 p-5'>
