@@ -41,6 +41,7 @@ const LightBeam = ({ className }) => {
 
 export default function LandingPage() {
   const [registrationStep, setRegistrationStep] = useState(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 const [formData, setFormData] = useState({
   fullName: '',
   phone: '',
@@ -51,54 +52,71 @@ const [formData, setFormData] = useState({
 });
 
 const submitRegistration = async () => {
-if (
-  !formData.fullName ||
-  !formData.phone ||
-  !formData.churchName ||
-  !formData.place
-) {
-  alert("Please fill all fields");
-  return;
-}
+  if (isSubmitting) return;
 
-if (!/^\d{10}$/.test(formData.phone)) {
-  alert("Please enter valid phone number");
-  return;
-}
-
-if (
-  formData.paymentMode === "online" &&
-  !formData.utr
-) {
-  alert("Please enter UTR number");
-  return;
-}
-  try {
-
-await fetch(
-  "https://script.google.com/macros/s/AKfycbxy20P6d5acq-_SwrF4ISkL-hEmn4rfMznboc498AcSSPe8vsYTnz1eGC-_FpvEBtwy/exec",
-  {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      fullName: formData.fullName,
-      phone: formData.phone,
-      churchName: formData.churchName,
-      place: formData.place,
-      paymentMode: formData.paymentMode,
-      utr: formData.utr
-    }),
+  if (
+    !formData.fullName.trim() ||
+    !formData.phone.trim() ||
+    !formData.churchName.trim() ||
+    !formData.place.trim()
+  ) {
+    alert("Please fill all fields");
+    return;
   }
-);
+
+  if (!/^\d{10}$/.test(formData.phone)) {
+    alert("Please enter valid phone number");
+    return;
+  }
+
+  if (
+    formData.paymentMode === "online" &&
+    !formData.utr
+  ) {
+    alert("Please enter UTR number");
+    return;
+  }
+
+  try {
+    setIsSubmitting(true);
+
+    await fetch(
+      "https://script.google.com/macros/s/AKfycbxy20P6d5acq-_SwrF4ISkL-hEmn4rfMznboc498AcSSPe8vsYTnz1eGC-_FpvEBtwy/exec",
+      {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          phone: formData.phone,
+          churchName: formData.churchName,
+          place: formData.place,
+          paymentMode: formData.paymentMode,
+          utr: formData.utr,
+        }),
+      }
+    );
 
     alert("Registration Successful!");
+
+    setFormData({
+      fullName: '',
+      phone: '',
+      churchName: '',
+      place: '',
+      paymentMode: '',
+      utr: '',
+    });
+
+    setRegistrationStep(1);
 
   } catch (error) {
     console.error(error);
     alert("Submission failed");
+  } finally {
+    setIsSubmitting(false);
   }
 };
   const { scrollY } = useScroll();
@@ -152,17 +170,17 @@ await fetch(
 
           {registrationStep === 1 && (
             <div className='grid gap-6 mt-10'>
-              <input type='text' placeholder='Full Name' value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-              <input type='tel' placeholder='Phone Number' value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-              <input type='text' placeholder='Church Name' value={formData.churchName} onChange={(e) => setFormData({ ...formData, churchName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-              <input type='text' placeholder='Place' value={formData.place} onChange={(e) => setFormData({ ...formData, place: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+              <input type='text' required placeholder='Full Name' value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+              <input type='tel'  required placeholder='Phone Number' value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+              <input type='text' required placeholder='Church Name' value={formData.churchName} onChange={(e) => setFormData({ ...formData, churchName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+              <input type='text' required placeholder='Place' value={formData.place} onChange={(e) => setFormData({ ...formData, place: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <button
                 onClick={() => {
                     if (
-                      !formData.fullName ||
-                      !formData.phone ||
-                      !formData.churchName ||
-                      !formData.place
+                      !formData.fullName.trim() ||
+                      !formData.phone.trim() ||
+                      !formData.churchName.trim() ||
+                      !formData.place.trim()
                     ) {
                       alert("Please fill all fields");
                       return;
@@ -194,10 +212,10 @@ await fetch(
                 <button
                  onClick={() => {
                       if (
-                        !formData.fullName ||
-                        !formData.phone ||
-                        !formData.churchName ||
-                        !formData.place
+                        !formData.fullName.trim() ||
+                        !formData.phone.trim() ||
+                        !formData.churchName.trim() ||
+                        !formData.place.trim()
                       ) {
                         alert("Please fill all fields");
                         return;
@@ -233,8 +251,14 @@ await fetch(
                     </div>
                   </div>
                   <div className='space-y-6'>
-                    <input type='text' placeholder='Transaction ID / UTR Number' value={formData.utr} onChange={(e) => setFormData({ ...formData, utr: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-                    <button className='w-full bg-yellow-400 text-black' onClick={submitRegistration}>Submit Registration</button>
+                    <input type='text' required placeholder='Transaction ID / UTR Number' value={formData.utr} onChange={(e) => setFormData({ ...formData, utr: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+                    <button
+                      className='w-full bg-yellow-400 text-black py-4 rounded-2xl disabled:opacity-50'
+                      onClick={submitRegistration}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? "Submitting..." : "Submit Registration"}
+                  </button>
                   </div>
                 </div>
               )}
@@ -244,11 +268,12 @@ await fetch(
                   <h3 className='text-3xl font-bold text-green-200'>Cash Payment Selected</h3>
                   <p className='mt-6'>Pay ₹30 per head at the venue during check-in.</p>
                   <button
-                    className='mt-8 bg-green-400 text-black px-8 py-4 rounded-2xl'
-                    onClick={submitRegistration}
-                  >
-                    Confirm Cash Registration
-                  </button>
+                  className='mt-8 bg-green-400 text-black px-8 py-4 rounded-2xl disabled:opacity-50'
+                  onClick={submitRegistration}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? "Submitting..." : "Confirm Cash Registration"}
+                </button>
                 </div>
               )}
             </div>
