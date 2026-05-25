@@ -171,7 +171,12 @@ const submitRegistration = async () => {
           {registrationStep === 1 && (
             <div className='grid gap-6 mt-10'>
               <input type='text' required placeholder='Full Name' value={formData.fullName} onChange={(e) => setFormData({ ...formData, fullName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
-              <input type='tel'  required placeholder='Phone Number' value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
+              <input type='number' inputMode='numeric' onWheel={(e) => e.target.blur()} required placeholder='Phone Number' value={formData.phone} onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  phone: e.target.value.slice(0, 10),
+                })
+              } className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <input type='text' required placeholder='Church Name' value={formData.churchName} onChange={(e) => setFormData({ ...formData, churchName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <input type='text' required placeholder='Place' value={formData.place} onChange={(e) => setFormData({ ...formData, place: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
               <button
@@ -253,7 +258,7 @@ const submitRegistration = async () => {
                   <div className='space-y-6'>
                     <input type='text' required placeholder='Transaction ID / UTR Number' value={formData.utr} onChange={(e) => setFormData({ ...formData, utr: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
                     <button
-                      className='w-full bg-yellow-400 text-black py-4 rounded-2xl disabled:opacity-50'
+                      className='w-full bg-yellow-400 text-black py-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed'
                       onClick={submitRegistration}
                       disabled={isSubmitting}
                     >
@@ -268,7 +273,7 @@ const submitRegistration = async () => {
                   <h3 className='text-3xl font-bold text-green-200'>Cash Payment Selected</h3>
                   <p className='mt-6'>Pay ₹30 per head at the venue during check-in.</p>
                   <button
-                  className='mt-8 bg-green-400 text-black px-8 py-4 rounded-2xl disabled:opacity-50'
+                  className='mt-8 bg-green-400 text-black px-8 py-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed'
                   onClick={submitRegistration}
                   disabled={isSubmitting}
                 >
@@ -280,6 +285,41 @@ const submitRegistration = async () => {
           )}
         </div>
       </section>
+
+      <section className='relative px-6 pb-10 bg-gradient-to-b from-[#0b0600] to-black'>
+  <div className='max-w-5xl mx-auto'>
+
+    <div className='relative overflow-hidden rounded-[2rem] border border-yellow-300/20 bg-gradient-to-br from-yellow-300/10 via-white/5 to-yellow-500/10 backdrop-blur-3xl p-10 md:p-14 shadow-[0_0_80px_rgba(255,215,0,0.08)]'>
+
+      <div className='absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(255,215,0,0.15),transparent_60%)]' />
+
+      <div className='relative z-10 text-center'>
+
+        <p className='uppercase tracking-[0.4em] text-yellow-200/70 text-sm mb-5'>
+          Special Event
+        </p>
+
+        <h2 className='text-3xl md:text-5xl font-black leading-tight bg-gradient-to-b from-yellow-100 via-white to-yellow-300 bg-clip-text text-transparent'>
+          Quiz Competition
+        </h2>
+
+        <p className='mt-5 text-xl md:text-2xl text-yellow-100 font-semibold'>
+          On the Book of Judges
+        </p>
+
+        <p className='mt-3 text-2xl md:text-3xl font-bold text-white/90'>
+          (న్యాయాధిపతుల గ్రంథము)
+        </p>
+
+        <div className='mt-8 inline-flex items-center gap-3 rounded-full border border-yellow-300/20 bg-yellow-300/10 px-6 py-3 text-yellow-100'>
+          📖 Prepare Well & Participate
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
 
       <section className='relative py-20 px-6 bg-gradient-to-b from-black to-[#050505]'>
         <div className='max-w-6xl mx-auto rounded-3xl border border-white/10 bg-white/5 backdrop-blur-3xl p-10 md:p-14'>
