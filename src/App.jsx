@@ -1,28 +1,37 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 
 const bgPrimary = '/images/hero.png';
 const bgSecondary = '/images/worship.png';
 const speakerImage = '/images/speaker.png';
-const paymentQr = '/images/payment-qr.jpeg';
 
 const Particles = () => {
-  const particles = useMemo(() => Array.from({ length: 60 }, (_, i) => i), []);
+  const particles = useMemo(
+    () =>
+      Array.from({ length: 60 }, () => ({
+        width: Math.random() * 3 + 1,
+        height: Math.random() * 3 + 1,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        duration: 10 + Math.random() * 5,
+      })),
+    []
+  );
 
   return (
     <div className='absolute inset-0 overflow-hidden pointer-events-none'>
-      {particles.map((i) => (
+      {particles.map((particle, i) => (
         <motion.div
           key={i}
           className='absolute rounded-full bg-white'
           style={{
-            width: `${Math.random() * 3 + 1}px`,
-            height: `${Math.random() * 3 + 1}px`,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
+            width: `${particle.width}px`,
+            height: `${particle.height}px`,
+            left: `${particle.left}%`,
+            top: `${particle.top}%`,
           }}
           animate={{ y: [0, -180, 0], opacity: [0, 0.9, 0] }}
-          transition={{ duration: 10 + Math.random() * 5, repeat: Infinity }}
+          transition={{ duration: particle.duration, repeat: Infinity }}
         />
       ))}
     </div>
@@ -49,6 +58,7 @@ const [formData, setFormData] = useState({
   place: '',
   paymentMode: '',
   utr: '',
+  receiverName: '',
 });
 
 const submitRegistration = async () => {
@@ -71,9 +81,9 @@ const submitRegistration = async () => {
 
   if (
     formData.paymentMode === "online" &&
-    !formData.utr
+    (!formData.utr || !formData.receiverName.trim())
   ) {
-    alert("Please enter UTR number");
+    alert("Please enter UTR number and receiver name");
     return;
   }
 
@@ -95,6 +105,7 @@ const submitRegistration = async () => {
           place: formData.place,
           paymentMode: formData.paymentMode,
           utr: formData.utr,
+          receiverName: formData.receiverName,
         }),
       }
     );
@@ -108,6 +119,7 @@ const submitRegistration = async () => {
       place: '',
       paymentMode: '',
       utr: '',
+      receiverName: '',
     });
 
     setRegistrationStep(1);
@@ -248,14 +260,14 @@ const submitRegistration = async () => {
               {formData.paymentMode === 'online' && (
                 <div className='grid md:grid-cols-2 gap-10 items-center'>
                   <div className='rounded-3xl border border-white/10 bg-white/5 p-8 text-center'>
-                    <h3 className='text-2xl font-bold text-yellow-100 mb-6'>Scan & Pay ₹30 per Head</h3>
-                    <img src={paymentQr} alt='Payment QR' className='w-full max-w-xs mx-auto rounded-2xl border border-white/10' />
+                    <h3 className='text-2xl font-bold text-yellow-100 mb-6'>Payment Confirmation</h3>
+                    <p className='text-white/75'>Enter the name of the person who received your payment so we can verify it later.</p>
                     <div className='mt-6 rounded-2xl border border-yellow-300/20 bg-yellow-300/10 p-5 text-left'>
-                      <p>Expected Receiver Name:</p>
-                      <p className='text-yellow-200 font-semibold'>Kamatham Jonathan Samuel</p>
+                      <p className='text-yellow-100/80'>Use the receiver name exactly as confirmed during payment.</p>
                     </div>
                   </div>
                   <div className='space-y-6'>
+                    <input type='text' required placeholder='Receiver Name' value={formData.receiverName} onChange={(e) => setFormData({ ...formData, receiverName: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
                     <input type='text' required placeholder='Transaction ID / UTR Number' value={formData.utr} onChange={(e) => setFormData({ ...formData, utr: e.target.value })} className='w-full rounded-2xl bg-white/10 border border-white/20 px-5 py-5 text-white' />
                     <button
                       className='w-full bg-yellow-400 text-black py-4 rounded-2xl disabled:opacity-50 disabled:cursor-not-allowed'
