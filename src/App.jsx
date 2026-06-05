@@ -329,7 +329,7 @@ const submitRegistration = async () => {
               'Registration is mandatory for all participants',
               'For singing participation, each team must have a minimum of 5 members',
               'For quiz participation, only 3 members are allowed from each church',
-              'Instruments allowed: Keyboard, Drums',
+              'Instruments provided: Keyboard, Drums',
               'Auto-Rhythm is not supported',
               'Please carry your Bible',
             ].map((note) => (
